@@ -1,4 +1,3 @@
-
 const request = require("supertest");
 const app = require("./app");
 
@@ -11,6 +10,17 @@ describe("Testes da API TaskFlow", () => {
     expect(resposta.body.mensagem).toBe(
       "API TaskFlow funcionando!"
     );
+  });
+
+  // Health Check - Fase 2
+  test("GET /health deve retornar o status da aplicação", async () => {
+    const resposta = await request(app).get("/health");
+
+    expect(resposta.statusCode).toBe(200);
+    expect(resposta.body.status).toBe("healthy");
+    expect(resposta.body.service).toBe("TaskFlow");
+    expect(typeof resposta.body.uptime).toBe("number");
+    expect(resposta.body.timestamp).toBeDefined();
   });
 
   test("GET /tarefas deve retornar uma lista", async () => {

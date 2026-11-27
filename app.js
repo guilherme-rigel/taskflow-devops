@@ -1,8 +1,30 @@
-
 const express = require("express");
 
 const app = express();
+
+// Segurança - Ocultar identificação do framework
+app.disable("x-powered-by");
+
 app.use(express.json());
+
+// Logging - Registro de requisições HTTP
+app.use((req, res, next) => {
+  const inicio = Date.now();
+
+  res.on("finish", () => {
+    const duracao = Date.now() - inicio;
+
+    console.log(JSON.stringify({
+      timestamp: new Date().toISOString(),
+      metodo: req.method,
+      rota: req.path,
+      status: res.statusCode,
+      duracao_ms: duracao
+    }));
+  });
+
+  next();
+});
 
 let tarefas = [];
 let proximoId = 1;
@@ -11,6 +33,16 @@ let proximoId = 1;
 app.get("/", (req, res) => {
   res.status(200).json({
     mensagem: "API TaskFlow funcionando!"
+  });
+});
+
+// Health Check - Monitoramento da aplicação
+app.get("/health", (req, res) => {
+  res.status(200).json({
+    status: "healthy",
+    service: "TaskFlow",
+    uptime: process.uptime(),
+    timestamp: new Date().toISOString()
   });
 });
 

@@ -1,0 +1,10 @@
+node_modules/
+.git/
+.github/
+.gitignore
+.env
+.env.*
+coverage/
+terraform/
+*.test.js
+*.log
